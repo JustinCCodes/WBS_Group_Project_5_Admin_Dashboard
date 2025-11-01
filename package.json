@@ -1,0 +1,33 @@
+{
+  "name": "ecommerce-admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "next lint",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "lucide-react": "^0.548.0",
+    "next": "15.5.6",
+    "react": "^19",
+    "react-dom": "^19",
+    "react-hot-toast": "^2.6.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@tauri-apps/cli": "^2.9.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

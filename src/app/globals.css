@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* Configure Tailwind v4 dark mode - custom variant */
+@variant dark (&:is(.dark *));
+
+/* Dark mode support - using class-based strategy */
+:root {
+  color-scheme: light dark;
+  /* Toast theming variables */
+  --toast-bg: #ffffff;
+  --toast-color: #1f2937;
+  --toast-border: #e5e7eb;
+}
+
+.dark {
+  color-scheme: dark;
+  /* Toast theming for dark mode */
+  --toast-bg: #18181b;
+  --toast-color: #fafafa;
+  --toast-border: #27272a;
+}
+
+.light {
+  color-scheme: light;
+}
+
+/* Smooth transitions for theme changes - but not for all properties */
+body,
+div,
+section,
+header,
+footer,
+nav,
+article,
+aside {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Disable transitions on page load */
+.preload * {
+  transition: none !important;
+}
+
+/* Gradient Animation for Background */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* RGB Border Animation */
+@keyframes rgb-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.rgb-border {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    rgba(239, 68, 68, 0.5),
+    rgba(234, 179, 8, 0.5),
+    rgba(34, 197, 94, 0.5),
+    rgba(59, 130, 246, 0.5),
+    rgba(168, 85, 247, 0.5),
+    rgba(239, 68, 68, 0.5)
+  );
+  background-size: 300% 300%;
+  animation: rgb-border 3s ease infinite;
+  height: 2px;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(243 244 246);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: rgb(17 24 39);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(209 213 219);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(156 163 175);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgb(55 65 81);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(75 85 99);
+}
