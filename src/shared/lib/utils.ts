@@ -1,6 +1,6 @@
-// Shared utility functions for common operations across the application
-
 import type { ApiErrorResponse } from "@/src/types/types";
+
+// Shared utility functions for common operations across the application
 
 // Extracts error message from API errors
 export function getErrorMessage(error: unknown): string {

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
 // API Error Response Type
 export interface ApiErrorResponse {
@@ -95,4 +95,20 @@ export interface TableProps<T> {
   renderRow: (item: T, index: number) => React.ReactNode;
   emptyMessage?: string;
   className?: string;
+}
+// Button component props
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "success"
+    | "ghost"
+    | "edit"
+    | "dropdown-option";
+  size?: "sm" | "md" | "lg";
+  children: ReactNode;
+  fullWidth?: boolean;
+  loading?: boolean;
+  selected?: boolean; // For dropdown-option variant
 }
