@@ -1,22 +1,5 @@
 "use client";
-
-import { ButtonHTMLAttributes, ReactNode } from "react";
-
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?:
-    | "primary"
-    | "secondary"
-    | "danger"
-    | "success"
-    | "ghost"
-    | "edit"
-    | "dropdown-option";
-  size?: "sm" | "md" | "lg";
-  children: ReactNode;
-  fullWidth?: boolean;
-  loading?: boolean;
-  selected?: boolean; // For dropdown-option variant
-}
+import { ButtonProps } from "@/src/types/types";
 
 // Reusable Button component with variants and loading state
 export default function Button({

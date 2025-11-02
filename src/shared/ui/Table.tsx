@@ -1,6 +1,5 @@
 import React from "react";
-import { TableProps } from "@/src/types/types";
-import { Column } from "@/src/types/types";
+import { TableProps, Column } from "@/src/types/types";
 
 // Table component to display data in tabular format
 export default function Table<T>({
