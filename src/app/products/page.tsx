@@ -1,5 +1,5 @@
-import ProductsManagement from "@/src/features/components/ProductsManagement";
+import { ProductsManagementContainer } from "@/src/features/products";
 
 export default function ProductsPage() {
-  return <ProductsManagement />;
+  return <ProductsManagementContainer />;
 }

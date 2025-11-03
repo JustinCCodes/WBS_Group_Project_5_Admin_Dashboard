@@ -2,7 +2,19 @@
 
 A powerful, secure admin dashboard for managing e-commerce operations. Built with Next.js 15, React 19, and TypeScript 5. Features comprehensive product management, order tracking, user administration, and real-time analytics.
 
----
+**Version 2.0** - Now w---
+
+## ✨ Feature Highlights
+
+| Feature        | Components                                                                                      | Key Capabilities                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Products**   | ProductsManagement, ProductForm, ProductsTable, ProductFilters, ImageUploadSection, StockEditor | Full CRUD, image upload, stock tracking, filtering, sorting, pagination |
+| **Categories** | CategoriesManagement, CategoryForm, CategoriesTable, CategoryFilters                            | Full CRUD, search, sort, product count tracking                         |
+| **Orders**     | OrdersManagement, OrdersTable, OrderFilters, OrderDetailsModal                                  | Status updates, filtering, revenue tracking, detailed views             |
+| **Users**      | UsersManagement, UsersTable, UserFilters, BanUserModal                                          | User management, ban/unban, filtering, sorting                          |
+| **Featured**   | FeaturedProductsManagement, FeaturedProductsGrid, FeaturedProductCard, FeaturedPagination       | Toggle featured status, card layout, pagination                         |
+| **Dashboard**  | AdminDashboard                                                                                  | Statistics, low stock alerts, recent orders, quick navigation           |
+| **Auth**       | LoginForm, LoginPage                                                                            | Secure login, JWT tokens, role verification                             |
 
 ## 🚀 Tech Stack
 
@@ -30,32 +42,58 @@ A powerful, secure admin dashboard for managing e-commerce operations. Built wit
 ### 🛍️ Product Management
 
 - **Product Catalog:** View, create, edit, and delete products
-- **Category Management:** Organize products into categories
-- **Featured Products:** Highlight products on the homepage
-- **Stock Management:** Track inventory levels
-- **Image Upload:** Product image management
-- **Bulk Operations:** Efficient multi-product management
+- **Advanced Filtering:** Search by name, filter by category, sort by multiple criteria
+- **Stock Editor:** Dedicated component for inventory management
+- **Image Upload:** Cloudinary integration with preview and validation
+- **Category Assignment:** Dropdown selection with validation
+- **Featured Status:** Toggle products for homepage display
+- **Bulk Operations:** Unsaved products panel for batch management
+- **Form Validation:** Real-time validation with error feedback
+- **Responsive Tables:** Mobile-friendly product listings
 
 ### 📦 Order Management
 
-- **Order Overview:** View all customer orders with status
-- **Order Details:** Detailed view of order items and customer info
-- **Status Updates:** Change order status (pending, processing, shipped, delivered)
-- **Order Search:** Filter and search orders by various criteria
-- **Test Orders:** Separate testing environment for development
+- **Order Overview:** View all customer orders with status badges
+- **Order Details Modal:** Detailed view of order items and customer info
+- **Status Updates:** Change order status with confirmation
+- **Advanced Filtering:** Search by ID, filter by status, date range, sort options
+- **Revenue Tracking:** Real-time filtered revenue calculation
+- **Order Table:** Sortable columns with customer information
+- **Delete Orders:** Remove orders with confirmation dialogs
 
 ### 👥 User Management
 
-- **User Directory:** View all registered customers
-- **User Details:** Access to user information and order history
-- **Account Control:** Ban/unban user accounts
-- **Role Management:** Admin access control
+- **User Directory:** View all registered customers with pagination
+- **User Search:** Filter by name, email, or status
+- **Account Control:** Ban/unban user accounts with modal confirmation
+- **User Status Badges:** Visual indicators for banned/active users
+- **Sorting Options:** Sort by name, email, or registration date
+- **Role Display:** View user roles and permissions
 
-### 🎨 Content Management
+### 🗂️ Category Management
 
-- **Featured Products:** Manage homepage featured items
-- **Category Organization:** Create and manage product categories
-- **Visual Hierarchy:** Control product display priority
+- **Category CRUD:** Create, read, update, and delete categories
+- **Category Table:** Sortable table with search functionality
+- **Category Form:** Inline forms for quick edits
+- **Category Filters:** Search and sort by name or date
+- **Product Count:** Track products per category
+- **Validation:** Required fields with error handling
+
+### 🎨 Featured Products Management
+
+- **Featured Grid:** Card-based layout for featured products
+- **Toggle Featured:** Mark/unmark products as featured
+- **Pagination:** Navigate through featured products
+- **Product Cards:** Visual representation with images
+- **Quick Actions:** Direct access to product management
+- **Empty State:** Clear messaging when no featured products
+
+### 🌓 Theme & Preferences
+
+- **Light/Dark Mode:** Toggle between themes
+- **Persistent Preferences:** Theme saved to localStorage
+- **System Integration:** Respects system theme preferences
+- **Smooth Transitions:** Animated theme changes
 
 ### 🔐 Security & Authentication
 
@@ -65,10 +103,13 @@ A powerful, secure admin dashboard for managing e-commerce operations. Built wit
 - **Role-Based Access:** Admin-only routes with role verification
 - **Automatic Token Refresh:** Seamless session management
 - **Secure Storage:** Tauri keystore for desktop, httpOnly cookies for web
+- **Token Validation:** Client-side JWT validation with expiry checks
 
 ---
 
 ## 📁 Project Structure
+
+The project follows a **feature-based modular architecture** for better organization and scalability:
 
 ```
 ecommerce-admin/
@@ -80,50 +121,118 @@ ecommerce-admin/
 │   │   ├── products/           # Product management
 │   │   ├── categories/         # Category management
 │   │   ├── orders/             # Order management
-│   │   ├── test-orders/        # Test order viewing
 │   │   ├── users/              # User management
 │   │   └── featured/           # Featured products
 │   │
-│   ├── features/               # Feature modules
-│   │   ├── auth/               # Admin authentication
-│   │   │   ├── components/     # Login, AuthGuard
-│   │   │   ├── context/        # AdminAuthProvider
-│   │   │   └── types.ts        # Auth types
+│   ├── features/               # Feature modules (domain-driven)
+│   │   ├── auth/               # Authentication feature
+│   │   │   ├── components/     # LoginForm, LoginPage
+│   │   │   ├── hooks/          # useAuth hooks
+│   │   │   ├── data.ts         # Auth API calls
+│   │   │   ├── types.ts        # Auth types
+│   │   │   └── index.ts        # Feature exports
 │   │   │
-│   │   ├── components/         # Shared feature components
-│   │   │   ├── CategoryManager.tsx
-│   │   │   ├── Dashboard.tsx
-│   │   │   ├── FeaturedManager.tsx
-│   │   │   ├── OrderManager.tsx
-│   │   │   ├── ProductManager.tsx
-│   │   │   ├── TestOrderManager.tsx
-│   │   │   └── UserManager.tsx
+│   │   ├── home/               # Dashboard feature
+│   │   │   ├── components/     # AdminDashboard
+│   │   │   ├── data.ts         # Dashboard API calls
+│   │   │   ├── types.ts        # Dashboard types
+│   │   │   └── index.ts        # Feature exports
 │   │   │
-│   │   ├── hooks/              # Custom React hooks
-│   │   ├── data.ts             # API data fetching
-│   │   ├── types.ts            # Shared types
-│   │   └── index.ts            # Feature exports
+│   │   ├── products/           # Products feature
+│   │   │   ├── components/     # ProductsManagement, ProductForm,
+│   │   │   │                   # ProductsTable, ProductFilters,
+│   │   │   │                   # ImageUploadSection, StockEditor, etc.
+│   │   │   ├── hooks/          # useProducts, useProductForm
+│   │   │   ├── utils/          # Product utilities
+│   │   │   ├── data.ts         # Products API calls
+│   │   │   ├── types.ts        # Product types
+│   │   │   └── index.ts        # Feature exports
+│   │   │
+│   │   ├── categories/         # Categories feature
+│   │   │   ├── components/     # CategoriesManagement, CategoryForm,
+│   │   │   │                   # CategoriesTable, CategoryFilters
+│   │   │   ├── hooks/          # useCategories, useCategoryForm
+│   │   │   ├── data.ts         # Categories API calls
+│   │   │   ├── types.ts        # Category types
+│   │   │   └── index.ts        # Feature exports
+│   │   │
+│   │   ├── orders/             # Orders feature
+│   │   │   ├── components/     # OrdersManagement, OrdersTable,
+│   │   │   │                   # OrderFilters, OrderDetailsModal
+│   │   │   ├── hooks/          # useOrders, useOrderForm
+│   │   │   ├── data.ts         # Orders API calls
+│   │   │   ├── types.ts        # Order types
+│   │   │   └── index.ts        # Feature exports
+│   │   │
+│   │   ├── users/              # Users feature
+│   │   │   ├── components/     # UsersManagement, UsersTable,
+│   │   │   │                   # UserFilters, BanUserModal
+│   │   │   ├── hooks/          # useUsers, useUserForm
+│   │   │   ├── data.ts         # Users API calls
+│   │   │   ├── types.ts        # User types
+│   │   │   └── index.ts        # Feature exports
+│   │   │
+│   │   ├── featured/           # Featured products feature
+│   │   │   ├── components/     # FeaturedProductsManagement,
+│   │   │   │                   # FeaturedProductsGrid, FeaturedHeader,
+│   │   │   │                   # FeaturedProductCard, FeaturedPagination
+│   │   │   ├── hooks/          # useFeaturedProducts
+│   │   │   ├── types.ts        # Featured types
+│   │   │   └── index.ts        # Feature exports
+│   │   │
+│   │   ├── data.ts             # Shared API functions
+│   │   ├── types.ts            # Shared feature types
+│   │   └── index.ts            # Root feature exports
 │   │
-│   └── shared/                 # Shared resources
-│       ├── components/         # Reusable UI components
-│       │   ├── Sidebar.tsx     # Navigation sidebar
-│       │   └── Toast.tsx       # Notification system
-│       │
-│       ├── context/            # Global state providers
-│       │   └── GlobalProvider.tsx
-│       │
-│       ├── lib/                # Core utilities
-│       │   ├── api.ts          # Admin API client
-│       │   ├── tauriKeystore.ts # Secure storage (Tauri)
-│       │   └── utils.ts        # Helper functions
-│       │
-│       └── ui/                 # UI primitives
-│           └── button/         # Button components
+│   ├── shared/                 # Shared resources
+│   │   ├── components/         # Cross-feature components
+│   │   │   ├── ThemeToggle.tsx
+│   │   │   └── TokenInitializer.tsx
+│   │   │
+│   │   ├── context/            # Global state providers
+│   │   │   └── ThemeContext.tsx
+│   │   │
+│   │   ├── hooks/              # Shared custom hooks
+│   │   │   ├── useAdminForm.ts
+│   │   │   ├── useApiMutation.ts
+│   │   │   ├── useResourceFetch.ts
+│   │   │   ├── useDeleteConfirmation.ts
+│   │   │   ├── types.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── lib/                # Core utilities
+│   │   │   ├── api.ts          # Admin API client
+│   │   │   ├── tauriKeystore.ts # Secure storage (Tauri)
+│   │   │   ├── tokenValidator.ts # JWT validation
+│   │   │   ├── urlResolver.ts   # URL resolution
+│   │   │   ├── cloudinary.ts    # Image upload
+│   │   │   └── utils.ts         # Helper functions
+│   │   │
+│   │   ├── types/              # Shared type definitions
+│   │   │   └── types.ts
+│   │   │
+│   │   └── ui/                 # Reusable UI primitives
+│   │       ├── Button.tsx
+│   │       ├── Table.tsx
+│   │       ├── Modal.tsx
+│   │       ├── SearchBar.tsx
+│   │       ├── CustomSelect.tsx
+│   │       ├── StatusBadge.tsx
+│   │       ├── ErrorAlert.tsx
+│   │       ├── LoadingState.tsx
+│   │       ├── ConfirmDialog.tsx
+│   │       └── BackButton.tsx
+│   │
+│   └── types/                  # Global type definitions
+│       ├── tauri.d.ts          # Tauri type declarations
+│       └── types.ts            # Global types
 │
 ├── src-tauri/                  # Tauri desktop app (optional)
 │   ├── src/
 │   │   ├── lib.rs
 │   │   └── main.rs
+│   ├── capabilities/
+│   │   └── default.json
 │   ├── Cargo.toml
 │   └── tauri.conf.json
 │
@@ -136,9 +245,67 @@ ecommerce-admin/
 └── tsconfig.json               # TypeScript configuration
 ```
 
----
+### 🏗️ Architecture Principles
 
-## 🛠️ Getting Started
+- **Feature-Based Organization:** Each domain (auth, products, orders, etc.) is self-contained
+- **Colocation:** Related components, hooks, and utilities live together
+- **Separation of Concerns:** Clear boundaries between features and shared code
+- **Scalability:** Easy to add new features without affecting existing code
+- **Reusability:** Shared UI components and utilities in dedicated folders
+
+### 🎣 Custom Hooks
+
+The application uses a comprehensive set of custom hooks for business logic:
+
+#### Feature-Specific Hooks
+
+- **`useProducts`:** Fetch and manage products with caching
+- **`useCategories`:** Category management and fetching
+- **`useOrders`:** Order data management
+- **`useUsers`:** User data fetching and management
+- **`useFeaturedProducts`:** Featured products handling
+
+#### Shared Hooks
+
+- **`useAdminForm`:** Generic form state management with validation
+- **`useApiMutation`:** API mutation operations (create, update, delete)
+- **`useResourceFetch`:** Generic resource fetching with loading states
+- **`useDeleteConfirmation`:** Confirmation dialogs for delete operations
+
+### 🧰 Shared Utilities
+
+- **`api.ts`:** Centralized Axios client with interceptors
+- **`utils.ts`:** Helper functions (sorting, filtering, formatting)
+- **`tauriKeystore.ts`:** Secure token storage for desktop
+- **`tokenValidator.ts`:** JWT validation and parsing
+- **`urlResolver.ts`:** Environment-based URL resolution
+- **`cloudinary.ts`:** Image upload integration
+
+### 🎨 UI Component Library
+
+The application includes a comprehensive set of reusable UI components:
+
+#### Data Display
+
+- **`Table`:** Generic table component with sorting and pagination
+- **`StatusBadge`:** Color-coded status indicators
+- **`LoadingState`:** Consistent loading indicators
+- **`ErrorAlert`:** Error message display
+
+#### Forms & Input
+
+- **`Button`:** Customizable button with loading states
+- **`SearchBar`:** Search input with debouncing
+- **`CustomSelect`:** Dropdown select component
+- **`Modal`:** Reusable modal dialog
+
+#### Navigation & Feedback
+
+- **`BackButton`:** Navigation helper
+- **`ConfirmDialog`:** Confirmation dialogs
+- **`ThemeToggle`:** Light/dark mode switcher
+
+## �🛠️ Getting Started
 
 ### Prerequisites
 
@@ -275,10 +442,23 @@ All admin routes require authentication:
 - **Total Orders:** All-time orders placed
 - **Total Revenue:** Sum of all completed orders
 
+### Low Stock Alerts
+
+- **Inventory Monitoring:** Real-time tracking of low stock products
+- **Visual Warnings:** Alert badges for items needing restock
+- **Quick Navigation:** Direct links to product management
+
 ### Recent Activity
 
-- **Newest Orders:** Real-time order feed
-- **Quick Actions:** One-click navigation to management sections
+- **Newest Orders:** Real-time order feed with status
+- **Order Details:** Quick view of recent transactions
+- **Customer Information:** User details for recent orders
+
+### Quick Actions
+
+- **Navigation Cards:** One-click access to all management sections
+- **Icon-Based UI:** Visual categorization with Lucide icons
+- **Hover Effects:** Interactive feedback on navigation elements
 
 ---
 
@@ -287,21 +467,29 @@ All admin routes require authentication:
 ### Features
 
 - **Create Products:** Add new items with details and images
-- **Edit Products:** Update product information
-- **Delete Products:** Remove discontinued items
-- **Category Assignment:** Organize products
-- **Stock Levels:** Track inventory
-- **Price Management:** Set product pricing
+- **Edit Products:** Update product information with inline editing
+- **Delete Products:** Remove discontinued items with confirmation
+- **Category Assignment:** Organize products with dropdown selection
+- **Stock Management:** Track inventory with dedicated stock editor
+- **Price Management:** Set product pricing with validation
+- **Image Upload:** Cloudinary integration for image hosting
+- **Image Preview:** Visual feedback for uploaded images
+- **Bulk Operations:** Unsaved changes panel for batch updates
+- **Advanced Filtering:** Search, sort, and filter by multiple criteria
+- **Pagination:** Efficient browsing of large product catalogs
+- **Validation:** Real-time form validation with error messages
 
 ### Product Fields
 
-- Name
-- Description
-- Price
-- Stock quantity
-- Category
-- Featured status
-- Image URL
+- Name (required)
+- Description (required)
+- Price (required, positive number)
+- Stock quantity (required, integer)
+- Category (required, dropdown)
+- Featured status (toggle)
+- Image (upload with preview)
+- Created/Updated timestamps
+- Created by (admin tracking)
 
 ---
 
@@ -375,7 +563,38 @@ All admin routes require authentication:
 
 ---
 
-## 🚢 Deployment
+## �️ Development Experience
+
+### Hot Module Replacement
+
+- Fast refresh for instant feedback during development
+- Preserves component state during edits
+- Error overlay for quick debugging
+
+### Type Safety
+
+- Full TypeScript coverage
+- Compile-time error checking
+- IntelliSense support in VS Code
+- Type-safe API calls and responses
+
+### Developer Tools
+
+- React DevTools compatibility
+- Browser DevTools integration
+- Network request inspection
+- Console logging for debugging
+
+### Code Quality
+
+- ESLint configuration for Next.js
+- Consistent code formatting
+- Import organization
+- Unused code detection
+
+---
+
+## �🚢 Deployment
 
 ### Build for Production
 
@@ -462,14 +681,51 @@ npm start
 
 ---
 
-## 📝 Code Style
+## 📝 Code Style & Best Practices
 
-- **TypeScript:** Strict mode enabled
-- **ESLint:** Next.js recommended config
-- **Formatting:** Consistent spacing and indentation
-- **Naming:** camelCase for variables, PascalCase for components
-- **Comments:** Clear, concise explanations for complex logic
-- **Error Handling:** Comprehensive try-catch blocks
+### TypeScript Standards
+
+- **Strict Mode:** Enabled for type safety
+- **Type Definitions:** Comprehensive interfaces and types
+- **Type Exports:** Centralized type exports per feature
+- **No Implicit Any:** All types explicitly defined
+
+### Component Architecture
+
+- **Functional Components:** React hooks-based architecture
+- **Component Composition:** Small, focused, reusable components
+- **Custom Hooks:** Business logic extracted into hooks
+- **Separation of Concerns:** UI, logic, and data layers separated
+
+### Code Organization
+
+- **Feature-Based:** Domain-driven folder structure
+- **Colocation:** Related files grouped together
+- **Index Exports:** Clean public APIs for features
+- **Barrel Files:** Simplified imports across features
+
+### Naming Conventions
+
+- **Components:** PascalCase (e.g., `ProductsManagement`)
+- **Files:** Matching component name (e.g., `ProductsManagement.tsx`)
+- **Functions/Variables:** camelCase (e.g., `handleSubmit`, `isLoading`)
+- **Types/Interfaces:** PascalCase (e.g., `Product`, `ApiResponse`)
+- **Constants:** UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
+- **Hooks:** Prefixed with "use" (e.g., `useProducts`, `useApiMutation`)
+
+### Error Handling
+
+- **Try-Catch Blocks:** Comprehensive error catching
+- **User-Friendly Messages:** Toast notifications for errors
+- **Loading States:** Visual feedback during operations
+- **Form Validation:** Real-time validation with error messages
+- **API Error Handling:** Centralized error handling in API client
+
+### Comments & Documentation
+
+- **Inline Comments:** Explaining complex logic
+- **Type Comments:** Describing type purposes
+- **README Files:** Feature-specific documentation where needed
 
 ---
 
@@ -494,5 +750,3 @@ Private project for educational purposes.
 - **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/sturmjustin/)
 
 ---
-
-**Built with ❤️ for efficient e-commerce management**

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
 import Button from "@/src/shared/ui/Button";
 import type { CustomSelectProps } from "@/src/types/types";
@@ -17,20 +18,39 @@ export function CustomSelect({
 }: // Props destructured from CustomSelectProps
 CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<"bottom" | "top">(
+    "bottom"
+  );
+  const [dropdownStyles, setDropdownStyles] = useState<{
+    top?: number;
+    bottom?: number;
+    left?: number;
+    width?: number;
+  }>({});
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // Close dropdown when clicking outside
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Closes dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node;
+      // Checks if click is outside both the container AND the dropdown
       if (
         containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        !containerRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
       ) {
         setIsOpen(false);
       }
     }
 
-    // Attach/detach event listener based on isOpen state
+    // Attaches/detaches event listener based on isOpen state
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
@@ -39,7 +59,47 @@ CustomSelectProps) {
     }
   }, [isOpen]);
 
-  // Find the selected option for display
+  // Calculates dropdown position when opening and update on scroll/resize
+  useEffect(() => {
+    const updatePosition = () => {
+      if (isOpen && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        // If there is more space above and not enough below open upward
+        if (spaceBelow < 250 && spaceAbove > spaceBelow) {
+          setDropdownPosition("top");
+          setDropdownStyles({
+            left: rect.left,
+            bottom: viewportHeight - rect.top + 8,
+            width: rect.width,
+          });
+        } else {
+          setDropdownPosition("bottom");
+          setDropdownStyles({
+            left: rect.left,
+            top: rect.bottom + 8,
+            width: rect.width,
+          });
+        }
+      }
+    };
+
+    updatePosition();
+
+    if (isOpen) {
+      window.addEventListener("scroll", updatePosition, true);
+      window.addEventListener("resize", updatePosition);
+      return () => {
+        window.removeEventListener("scroll", updatePosition, true);
+        window.removeEventListener("resize", updatePosition);
+      };
+    }
+  }, [isOpen]);
+
+  // Finds the selected option for display
   const selectedOption = options.find((opt) => opt.value === value);
   const sizeClasses = size === "sm" ? "px-3 py-1.5 text-sm" : "px-4 py-2";
 
@@ -66,28 +126,39 @@ CustomSelectProps) {
         />
       </button>
 
-      {/* Dropdown Menu - Now uses Button component with dropdown-option variant */}
-      {isOpen && !disabled && (
-        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-2xl shadow-black/20 dark:shadow-black/50 max-h-60 overflow-y-auto">
-          {options.map((option) => (
-            <Button
-              key={option.value}
-              type="button"
-              variant="dropdown-option"
-              size={size}
-              selected={option.value === value}
-              fullWidth
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-              className="rounded-none first:rounded-t-lg last:rounded-b-lg"
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
-      )}
+      {/* Dropdown Menu - Rendered via Portal to avoid overflow issues */}
+      {isOpen &&
+        !disabled &&
+        mounted &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            style={{
+              position: "fixed",
+              ...dropdownStyles,
+            }}
+            className="z-50 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-2xl shadow-black/20 dark:shadow-black/50 max-h-60 overflow-y-auto"
+          >
+            {options.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                variant="dropdown-option"
+                size={size}
+                selected={option.value === value}
+                fullWidth
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className="rounded-none first:rounded-t-lg last:rounded-b-lg"
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

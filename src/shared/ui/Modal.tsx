@@ -10,7 +10,7 @@ export default function Modal({
 }: ModalProps) {
   if (!isOpen) return null;
 
-  // Define max width classes based on the provided maxWidth prop
+  // Defines max width classes based on the provided maxWidth prop
   const maxWidthClasses = {
     sm: "max-w-sm", // Small
     md: "max-w-md", // Medium

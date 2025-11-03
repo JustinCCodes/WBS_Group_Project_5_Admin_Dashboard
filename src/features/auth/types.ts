@@ -40,6 +40,7 @@ export type User = z.infer<typeof UserSchema>;
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 export type CurrentUser = User | null;
 
+// Ban information type
 export type BanInfo = {
   reason: string;
   until?: string;
@@ -61,3 +62,10 @@ export type UseLoginReturn = {
   loading: boolean;
   error: string | null;
 };
+
+// Component Props
+export interface LoginFormProps {
+  onSubmit: (email: string, password: string) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+}

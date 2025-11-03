@@ -1,7 +1,6 @@
 // URL Resolver for Admin Dashboard Tauri app Only
 
 // Gets backend URLs from environment variables or defaults to localhost
-
 function getBackendUrls(): { apiBaseUrl: string; authBaseUrl: string } {
   const apiUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";

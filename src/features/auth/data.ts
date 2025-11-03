@@ -10,7 +10,6 @@ import {
 } from "./types";
 
 // Auth API functions
-
 export async function login(
   input: LoginInput & { grant_type?: string } = { email: "", password: "" }
 ): Promise<User | { user: User; accessToken?: string }> {

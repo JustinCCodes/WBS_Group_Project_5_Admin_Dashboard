@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Theme, ThemeContextType } from "@/src/types/types";
 
+// Context for managing light/dark theme
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -25,15 +26,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
 
-    // Apply theme to document
+    // Applies theme to document
     try {
       const html = document.documentElement;
 
-      // Remove both classes first
+      // Removes both classes first
       html.classList.remove("light", "dark");
       html.classList.add(theme);
 
-      // Save to localStorage
+      // Saves to localStorage
       localStorage.setItem("admin-theme", theme);
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
@@ -42,7 +43,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted]);
 
-  // Toggle function to switch themes
+  // Toggles function to switch themes
   const toggleTheme = () => {
     setTheme((prev) => {
       const newTheme = prev === "light" ? "dark" : "light";
