@@ -1,5 +1,5 @@
-import UsersManagement from "@/src/features/components/UsersManagement";
+import UsersManagementContainer from "@/src/features/users/components/UsersManagement";
 
 export default function UsersPage() {
-  return <UsersManagement />;
+  return <UsersManagementContainer />;
 }

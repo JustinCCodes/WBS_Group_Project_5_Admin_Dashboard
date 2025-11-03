@@ -112,3 +112,15 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   selected?: boolean; // For dropdown-option variant
 }
+
+// ConfirmDialog component props
+export interface ConfirmDialogProps {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  variant?: "danger" | "primary";
+}

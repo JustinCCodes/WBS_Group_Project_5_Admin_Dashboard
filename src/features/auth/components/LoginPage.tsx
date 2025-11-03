@@ -12,7 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Handle form submission
+  // Handles form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSuccess(null);

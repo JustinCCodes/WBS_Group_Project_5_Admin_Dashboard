@@ -1,5 +1,5 @@
-import FeaturedProductsManagement from "@/src/features/components/FeaturedProductsManagement";
+import { FeaturedProductsManagementContainer } from "@/src/features/featured";
 
 export default function FeaturedPage() {
-  return <FeaturedProductsManagement />;
+  return <FeaturedProductsManagementContainer />;
 }

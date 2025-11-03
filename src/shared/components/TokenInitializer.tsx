@@ -5,7 +5,6 @@ import { setDesktopAccessToken } from "@/src/shared/lib/api";
 import { getValidAccessToken } from "@/src/shared/lib/tauriKeystore";
 
 // Initializes and validates the desktop access token on app startup
-
 export function TokenInitializer() {
   useEffect(() => {
     const initializeToken = async () => {

@@ -46,7 +46,6 @@ export async function removeItem(key: string): Promise<boolean> {
 }
 
 // Gets a valid access token, refreshing if needed
-
 export async function getValidAccessToken(): Promise<string | null> {
   try {
     const token = await getItem("accessToken");
@@ -115,7 +114,6 @@ export async function loadDesktopToken(): Promise<string | null> {
 }
 
 // Clears all authentication tokens and user data
-
 export async function clearTokens(): Promise<void> {
   try {
     await removeItem("accessToken");

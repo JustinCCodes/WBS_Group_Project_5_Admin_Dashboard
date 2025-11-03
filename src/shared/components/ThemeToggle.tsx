@@ -7,7 +7,7 @@ import { useTheme } from "@/src/shared/context/ThemeContext";
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
-  // Handle button click to toggle theme
+  // Handles button click to toggle theme
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();

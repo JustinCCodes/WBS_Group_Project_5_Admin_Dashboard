@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-
-interface LoginFormProps {
-  onSubmit: (email: string, password: string) => Promise<void>;
-  loading: boolean;
-  error: string | null;
-}
+import type { LoginFormProps } from "../types";
 
 // LoginForm Component
 export default function LoginForm({
@@ -17,7 +12,7 @@ export default function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Handle form submission
+  // Handles form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await onSubmit(email, password);

@@ -1,5 +1,5 @@
-import CategoriesManagement from "@/src/features/components/CategoriesManagement";
+import { CategoriesManagementContainer } from "@/src/features/categories";
 
 export default function CategoriesPage() {
-  return <CategoriesManagement />;
+  return <CategoriesManagementContainer />;
 }

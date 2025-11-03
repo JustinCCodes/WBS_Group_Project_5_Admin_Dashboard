@@ -22,7 +22,6 @@ export function decodeJWT(token: string): JWTPayload | null {
 }
 
 // Checks if a JWT token is expired
-
 export function isTokenExpired(
   token: string,
   bufferSeconds: number = 300 // default 5 minutes buffer

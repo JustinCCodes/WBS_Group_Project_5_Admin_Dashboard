@@ -1,7 +1,5 @@
 import type { ApiErrorResponse } from "@/src/types/types";
 
-// Shared utility functions for common operations across the application
-
 // Extracts error message from API errors
 export function getErrorMessage(error: unknown): string {
   if (typeof error === "string") return error;
@@ -16,43 +14,7 @@ export function getErrorMessage(error: unknown): string {
   );
 }
 
-// Handles delete operation with confirmation dialog
-export async function confirmAndDelete(
-  message: string,
-  deleteFn: () => Promise<any>,
-  refetchFn: () => Promise<void>
-
-  // Returns true if deletion succeeded false otherwise
-): Promise<boolean> {
-  if (!confirm(message)) {
-    return false;
-  }
-
-  // Executes deletion
-  const result = await deleteFn();
-  if (result) {
-    await refetchFn();
-    return true;
-  }
-
-  return false;
-}
-
-// Executes a mutation and refetches data if successful
-export async function mutateAndRefetch(
-  mutateFn: () => Promise<any>,
-  refetchFn: () => Promise<void>
-): Promise<boolean> {
-  const result = await mutateFn();
-  if (result) {
-    await refetchFn();
-    return true;
-  }
-  return false;
-}
-
 // Case insensitive text search helper
-
 export function textIncludes(
   text: string | null | undefined,
   searchTerm: string
@@ -74,7 +36,6 @@ export function sortByDate<T>(
 }
 
 // Sorts array by string field
-
 export function sortByString<T>(
   a: T,
   b: T,
