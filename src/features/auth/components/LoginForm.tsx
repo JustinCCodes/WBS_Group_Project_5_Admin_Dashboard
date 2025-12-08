@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import type { LoginFormProps } from "../types";
+import EnvironmentSwitcher from "./EnvironmentSwitcher";
 
 // LoginForm Component
 export default function LoginForm({
@@ -19,7 +20,10 @@ export default function LoginForm({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      {/* The Environment Switcher Button */}
+      <EnvironmentSwitcher />
+
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-8 shadow-xl">
           <h1 className="text-3xl font-bold text-center mb-8 text-amber-500">
@@ -39,6 +43,7 @@ export default function LoginForm({
                 className="w-full px-4 py-3 bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="admin@example.com"
                 disabled={loading}
+                autoComplete="off"
               />
             </div>
 
@@ -54,6 +59,7 @@ export default function LoginForm({
                 className="w-full px-4 py-3 bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="••••••••"
                 disabled={loading}
+                autoComplete="off"
               />
             </div>
 

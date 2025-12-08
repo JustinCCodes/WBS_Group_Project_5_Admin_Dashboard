@@ -236,7 +236,18 @@ export default function AdminDashboard() {
             renderRow={(order) => (
               <>
                 <td className="px-4 py-3 font-mono text-sm text-gray-600 dark:text-gray-400">
-                  {order.id.slice(-8)}
+                  <span
+                    className="cursor-pointer hover:text-amber-600 hover:underline"
+                    style={{ textDecoration: "none" }}
+                    onClick={() => {
+                      window.location.href = `/orders?search=${encodeURIComponent(
+                        order.orderNumber || order.id
+                      )}`;
+                    }}
+                    title="View this order"
+                  >
+                    {order.orderNumber || order.id}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   <div>

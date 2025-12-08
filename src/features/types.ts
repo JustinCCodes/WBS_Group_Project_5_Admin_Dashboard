@@ -64,7 +64,7 @@ export interface UseApiMutationOptions {
 }
 
 // Return type for useApiMutation hook
-export interface UseApiMutationReturn<TArgs extends any[], TResult> {
+export interface UseApiMutationReturn<TArgs extends unknown[], TResult> {
   mutate: (...args: TArgs) => Promise<TResult | undefined>;
   isLoading: boolean;
   error: string | null;

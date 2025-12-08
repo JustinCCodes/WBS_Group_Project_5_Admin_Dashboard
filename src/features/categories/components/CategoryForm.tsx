@@ -27,6 +27,7 @@ export function CategoryForm({
             required
             minLength={1}
             disabled={formState.loading}
+            autoComplete="off"
           />
         </div>
         <div className="flex justify-end space-x-4 mt-6">

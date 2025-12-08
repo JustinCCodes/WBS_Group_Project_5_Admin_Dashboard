@@ -1,6 +1,7 @@
 // Core order types
 export interface Order {
   id: string;
+  orderNumber: string;
   userId: {
     id: string;
     name: string;
@@ -46,6 +47,7 @@ export interface OrdersTableProps {
   onStatusChange: (orderId: string, newStatus: string) => void;
   onViewDetails: (order: Order) => void;
   onDeleteOrder: (orderId: string, orderDisplay: string) => void;
+  onHardDeleteOrder: () => void;
 }
 
 // Component props interfaces
