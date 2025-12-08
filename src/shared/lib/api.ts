@@ -5,6 +5,8 @@ import axios, {
   AxiosResponse,
 } from "axios";
 import { resolveUrl } from "./urlResolver";
+// Import getItem and setItem to handle token storage
+import { getItem, setItem } from "./tauriKeystore";
 
 // Internal function to parse ban info from error message
 const parseBanInfo = (
@@ -13,21 +15,14 @@ const parseBanInfo = (
   if (!errorMessage.includes("Account is banned")) {
     return null;
   }
-
-  // Extract reason and until date using regex
   const reasonMatch = errorMessage.match(
     /Reason:\s*(.+?)(?:\s+Banned until:|$)/
   );
-
-  // Extracts until date if present
   const untilMatch = errorMessage.match(/Banned until:\s*(.+?)$/);
-
-  // Builds ban info object
   const reason = reasonMatch
     ? reasonMatch[1].trim()
     : "Your account has been banned.";
   const until = untilMatch ? untilMatch[1].trim() : undefined;
-
   return { reason, until };
 };
 
@@ -44,7 +39,6 @@ export const setGlobalBanHandler = (
 };
 
 // Axios instance for admin API
-// baseURL will be determined dynamically in request interceptor
 const api: AxiosInstance = axios.create({
   withCredentials: true, // For sending cookies
   timeout: 30000, // 30 second timeout
@@ -69,23 +63,17 @@ const processQueue = (error: unknown = null) => {
   failedQueue = [];
 };
 
-// Requests interceptor to ensure credentials are always included
+// Requests interceptor
 api.interceptors.request.use(
   (config) => {
     const url = config.url || "";
-
-    // Uses extracted URL resolver for cleaner testable URL resolution
     config.url = resolveUrl(url);
-
-    // Ensures credentials are included in every request
     config.withCredentials = true;
 
-    // Attach CSRF token for state changing requests (double-submit cookie pattern)
     try {
-      // Only add to methods that modify state
+      // Attach CSRF token
       const method = (config.method || "get").toLowerCase();
       if (["post", "put", "patch", "delete"].includes(method)) {
-        // Read csrfToken cookie (non-httpOnly cookie set by backend)
         if (typeof window !== "undefined") {
           const match = document.cookie.match(/(?:^|; )csrfToken=([^;]+)/);
           if (match && match[1]) {
@@ -96,7 +84,7 @@ api.interceptors.request.use(
         }
       }
 
-      // Only send desktopAccessToken if running in Tauri (window.__TAURI__)
+      // Attach Access Token for Tauri
       if (
         desktopAccessToken &&
         typeof window !== "undefined" &&
@@ -108,7 +96,6 @@ api.interceptors.request.use(
         ] = `Bearer ${desktopAccessToken}`;
       }
     } catch (e) {
-      // Do not block requests if reading cookies fails
       if (process.env.NODE_ENV === "development") {
         console.warn("Failed to attach CSRF or desktop token", e);
       }
@@ -120,17 +107,14 @@ api.interceptors.request.use(
   }
 );
 
-// Desktop access token support (for Tauri desktop app)
+// Desktop access token support
 let desktopAccessToken: string | null = null;
 
 export const setDesktopAccessToken = (token: string | null) => {
   desktopAccessToken = token;
 };
 
-// Internal getter - not exported (only used within this module)
-const getDesktopAccessToken = () => desktopAccessToken;
-
-// Response interceptor to handle 401 errors and token refresh
+// Response interceptor
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -138,16 +122,11 @@ api.interceptors.response.use(
       | (AxiosRequestConfig & { _retry?: boolean })
       | undefined;
 
-    // If no original request just reject
     if (!original) {
       return Promise.reject(error);
     }
 
-    // Extracts status and request info
     const status = (error.response && error.response.status) || 0;
-    const isAuthPath = Boolean(
-      original.url && original.url.startsWith("/auth/")
-    );
     const isRefreshCall = Boolean(
       original.url &&
         (original.url === "/auth/refresh" || original.url.endsWith("/refresh"))
@@ -156,10 +135,13 @@ api.interceptors.response.use(
     // Checks for 403 ban status
     if (status === 403 && error.response?.data) {
       const errorData = error.response.data as { error?: string };
+
       if (errorData.error) {
         const banInfo = parseBanInfo(errorData.error);
+
         if (banInfo && globalBanHandler) {
           globalBanHandler(banInfo);
+
           return Promise.reject(error);
         }
       }
@@ -178,37 +160,78 @@ api.interceptors.response.use(
 
       if (isRefreshing) {
         // Queues this request to retry after refresh completes
+
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
+
           .then(() => {
             original._retry = true;
+
             return api(original);
           })
+
           .catch((err) => {
             return Promise.reject(err);
           });
       }
 
       original._retry = true;
+
       isRefreshing = true;
 
       try {
-        // Attempts to refresh the token
-        await api.post("/auth/refresh", {}, {
-          withCredentials: true,
-          _retry: true, // Prevents infinite loop
-        } as AxiosRequestConfig & { _retry?: boolean });
+        // Prepares refresh payload
+        let refreshPayload = {};
+        if (typeof window !== "undefined" && window.__TAURI__) {
+          const storedRefreshToken = await getItem("refreshToken");
+          if (!storedRefreshToken) {
+            throw new Error("No refresh token available for desktop client");
+          }
+          refreshPayload = {
+            grant_type: "desktop",
+            refreshToken: storedRefreshToken,
+          };
+        }
 
-        processQueue(null); // Resolves all queued requests
-        return api(original); // Retries the original request
+        // Makes refresh call
+        const refreshResponse = await api.post(
+          "/auth/refresh",
+          refreshPayload, // Send the payload
+          {
+            withCredentials: true,
+            _retry: true,
+          } as AxiosRequestConfig & { _retry?: boolean }
+        );
+
+        // Saves new tokens if rotated
+        if (typeof window !== "undefined" && window.__TAURI__) {
+          const { accessToken, refreshToken } = refreshResponse.data;
+          if (accessToken) {
+            setDesktopAccessToken(accessToken);
+            await setItem("accessToken", accessToken);
+            // Re attach new access token to original request
+            original.headers = original.headers || {};
+            (original.headers as Record<string, string>)[
+              "Authorization"
+            ] = `Bearer ${accessToken}`;
+          }
+          if (refreshToken) {
+            await setItem("refreshToken", refreshToken);
+          }
+        }
+
+        processQueue(null);
+        return api(original); // Retry original request
       } catch (refreshError) {
-        processQueue(refreshError); // Rejects all queued requests
+        processQueue(refreshError);
 
-        // If refresh fails, clear any stored client state and let
-        // the application UI decide whether to navigate to /login.
+        // If refresh fails clear tokens to force re login
         if (typeof window !== "undefined") {
           window.localStorage.removeItem("user");
+          window.localStorage.removeItem("accessToken");
+          window.localStorage.removeItem("refreshToken"); // Clears failed token
+          setDesktopAccessToken(null);
         }
 
         return Promise.reject(refreshError);
@@ -221,17 +244,55 @@ api.interceptors.response.use(
   }
 );
 
-// Proactive token refresh calls this periodically to refresh before expiry
+// Proactive token refresh
 export const proactiveRefresh = async (): Promise<boolean> => {
   try {
-    await api.post("/auth/refresh", {}, {
-      withCredentials: true,
-      _retry: true,
-    } as AxiosRequestConfig & { _retry?: boolean });
+    // Prepares refresh payload
+    let refreshPayload = {};
+    if (typeof window !== "undefined" && window.__TAURI__) {
+      const storedRefreshToken = await getItem("refreshToken");
+      if (!storedRefreshToken) {
+        console.warn("No refresh token for proactive refresh.");
+        return false; // Can't refresh
+      }
+      refreshPayload = {
+        grant_type: "desktop",
+        refreshToken: storedRefreshToken,
+      };
+    }
+
+    const refreshResponse = await api.post(
+      "/auth/refresh",
+      refreshPayload, // Send payload
+      {
+        withCredentials: true,
+        _retry: true,
+      } as AxiosRequestConfig & { _retry?: boolean }
+    );
+
+    // Save new tokens if rotated
+    if (typeof window !== "undefined" && window.__TAURI__) {
+      const { accessToken, refreshToken } = refreshResponse.data;
+      if (accessToken) {
+        setDesktopAccessToken(accessToken);
+        await setItem("accessToken", accessToken);
+      }
+      if (refreshToken) {
+        await setItem("refreshToken", refreshToken);
+      }
+    }
+
     return true;
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
       console.error("Proactive refresh failed:", error);
+    }
+    // Clear tokens if proactive refresh fails
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("user");
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("refreshToken");
+      setDesktopAccessToken(null);
     }
     return false;
   }

@@ -31,10 +31,10 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
 
     // Returns compiled dashboard statistics
     return {
-      totalUsers: usersRes.data.pagination?.total || users.length,
-      totalProducts: productsRes.data.pagination?.total || products.length,
+      totalUsers: usersRes.data.pagination?.totalItems || users.length,
+      totalProducts: productsRes.data.pagination?.totalItems || products.length,
       totalCategories: categories.length,
-      totalOrders: ordersRes.data.pagination?.total || 0,
+      totalOrders: ordersRes.data.pagination?.totalItems || 0,
       totalRevenue,
       newestOrders: orders.slice(0, 10), // Get the 10 newest orders
     };

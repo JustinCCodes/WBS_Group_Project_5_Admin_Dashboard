@@ -55,6 +55,7 @@ export const OrderFilters = ({
           value={dateFrom}
           onChange={(e) => onDateFromChange(e.target.value)}
           placeholder="From date"
+          autoComplete="off"
         />
       </div>
       <div>
@@ -64,6 +65,7 @@ export const OrderFilters = ({
           value={dateTo}
           onChange={(e) => onDateToChange(e.target.value)}
           placeholder="To date"
+          autoComplete="off"
         />
       </div>
       <div>

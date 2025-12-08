@@ -36,6 +36,7 @@ export const ProductForm = ({
             }
             required
             disabled={isLoading}
+            autoComplete="off"
           />
         </div>
 
@@ -57,6 +58,7 @@ export const ProductForm = ({
             }
             required
             disabled={isLoading}
+            autoComplete="off"
           />
         </div>
 
@@ -78,6 +80,7 @@ export const ProductForm = ({
             }
             required
             disabled={isLoading}
+            autoComplete="off"
           />
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
             Available inventory count
@@ -168,6 +171,7 @@ export const ProductForm = ({
                 accept="image/*"
                 onChange={onImageSelect}
                 disabled={isLoading || isUploadingImage}
+                autoComplete="off"
               />
             </label>
           )}
@@ -192,6 +196,7 @@ export const ProductForm = ({
                 }}
                 placeholder="https://example.com/image.jpg"
                 disabled={isLoading || isUploadingImage}
+                autoComplete="off"
               />
             </div>
           )}

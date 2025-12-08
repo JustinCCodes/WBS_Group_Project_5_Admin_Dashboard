@@ -3,8 +3,11 @@ import { textIncludes, sortByDate } from "@/src/shared/lib/utils";
 import type { Order } from "../types";
 
 // Hook to manage order filtering logic
-export const useOrderFilters = (orders: Order[]) => {
-  const [searchTerm, setSearchTerm] = useState("");
+export const useOrderFilters = (
+  orders: Order[],
+  initialSearch: string = ""
+) => {
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [filterStatus, setFilterStatus] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
@@ -23,6 +26,7 @@ export const useOrderFilters = (orders: Order[]) => {
         const matchesSearch =
           !searchTerm ||
           textIncludes(order.id, searchTerm) ||
+          textIncludes(order.orderNumber, searchTerm) ||
           textIncludes(customerName, searchTerm) ||
           textIncludes(customerEmail, searchTerm);
 

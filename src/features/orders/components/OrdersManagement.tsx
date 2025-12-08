@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { updateOrderStatus, deleteOrder } from "../data";
 import type { Order } from "../types";
@@ -17,12 +19,21 @@ import ConfirmDialog from "@/src/shared/ui/ConfirmDialog";
 
 // Main container component for managing orders
 export default function OrdersManagementContainer() {
+  // Guard: Only render after client-side hydration
+  const [isClient, setIsClient] = React.useState(false);
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
   const {
     orders,
     isLoading: loading,
     error,
     refetch: fetchOrders,
   } = useOrders();
+
+  // Gets search param from URL using Next.js hook (client only)
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
 
   // Filtering
   const {
@@ -37,11 +48,24 @@ export default function OrdersManagementContainer() {
     sortOrder,
     setSortOrder,
     filteredOrders,
-  } = useOrderFilters(orders);
+  } = useOrderFilters(orders, initialSearch);
 
   // Modal state
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+  const {
+    dialogProps,
+    openDeleteConfirm,
+    handleCancelDelete,
+    handleConfirmDelete,
+  } = useDeleteConfirmation("Order");
+
+  // Defines Handler for showing details
+  const showOrderDetails = (order: Order) => {
+    setSelectedOrder(order);
+    setShowDetailsModal(true);
+  };
 
   // API mutations
   const { mutate: mutateUpdateStatus } = useApiMutation(
@@ -52,34 +76,19 @@ export default function OrdersManagementContainer() {
     }
   );
 
+  // Defines Handler for updating status
+  const handleUpdateStatus = (orderId: string, status: string) => {
+    mutateUpdateStatus(orderId, status);
+  };
+
   // Delete mutation
   const { mutate: mutateDelete } = useApiMutation(deleteOrder, {
     successMessage: "Order deleted successfully",
     onSuccess: () => fetchOrders(true),
   });
 
-  // Delete confirmation dialog
-  const {
-    openDeleteConfirm,
-    handleConfirmDelete,
-    handleCancelDelete,
-    dialogProps,
-  } = useDeleteConfirmation("Order");
-
-  // Handlers
-  const handleUpdateStatus = async (orderId: string, newStatus: string) => {
-    await mutateUpdateStatus(orderId, newStatus);
-  };
-
-  // Show order details in modal
-  const showOrderDetails = (order: Order) => {
-    setSelectedOrder(order);
-    setShowDetailsModal(true);
-  };
-
-  // Loading state
-  if (loading && orders.length === 0) {
-    return <LoadingState message="Loading orders..." />;
+  if (!isClient) {
+    return null;
   }
 
   return (
@@ -131,6 +140,7 @@ export default function OrdersManagementContainer() {
           onStatusChange={handleUpdateStatus}
           onViewDetails={showOrderDetails}
           onDeleteOrder={openDeleteConfirm}
+          onHardDeleteOrder={() => fetchOrders(true)}
         />
 
         <div className="mt-4 text-sm text-gray-400">

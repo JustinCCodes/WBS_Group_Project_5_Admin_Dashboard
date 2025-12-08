@@ -43,6 +43,7 @@ export const BanUserModal = ({
           className="w-full px-4 py-3 bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
           value={until}
           onChange={(e) => onUntilChange(e.target.value)}
+          autoComplete="off"
         />
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Leave empty for permanent ban

@@ -3,6 +3,7 @@ import Button from "@/src/shared/ui/Button";
 import { CustomSelect } from "@/src/shared/ui/CustomSelect";
 import StatusBadge from "@/src/shared/ui/StatusBadge";
 import type { Order, OrdersTableProps } from "../types";
+import { hardDeleteOrder } from "../data";
 
 // Component to display a table of orders with actions
 export const OrdersTable = ({
@@ -14,6 +15,7 @@ export const OrdersTable = ({
   onStatusChange,
   onViewDetails,
   onDeleteOrder,
+  onHardDeleteOrder,
 }: OrdersTableProps) => {
   return (
     <>
@@ -35,7 +37,7 @@ export const OrdersTable = ({
         renderRow={(order: Order) => (
           <>
             <td className="px-4 py-3 font-mono text-sm text-gray-600 dark:text-gray-400">
-              {order.id.slice(-8)}
+              {order.orderNumber ? order.orderNumber : order.id}
             </td>
             <td className="px-4 py-3">
               {typeof order.userId === "object" ? (
@@ -109,6 +111,24 @@ export const OrdersTable = ({
                   }
                 >
                   Delete
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={async () => {
+                    if (
+                      window.confirm(
+                        "Permanently delete this order? This cannot be undone."
+                      )
+                    ) {
+                      await hardDeleteOrder(order.id);
+                      if (typeof onHardDeleteOrder === "function") {
+                        onHardDeleteOrder();
+                      }
+                    }
+                  }}
+                >
+                  Permanent Delete
                 </Button>
               </div>
             </td>

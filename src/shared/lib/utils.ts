@@ -30,8 +30,8 @@ export function sortByDate<T>(
   dateField: keyof T,
   order: "asc" | "desc"
 ): number {
-  const dateA = new Date(a[dateField] as any).getTime();
-  const dateB = new Date(b[dateField] as any).getTime();
+  const dateA = new Date(a[dateField] as string | number | Date).getTime();
+  const dateB = new Date(b[dateField] as string | number | Date).getTime();
   return order === "asc" ? dateA - dateB : dateB - dateA;
 }
 

@@ -28,7 +28,12 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
   }
 };
 
-// Deletes an order by ID
+// Deletes an order by ID (soft delete)
 export const deleteOrder = async (orderId: string) => {
   await api.delete(`/admin/orders/${orderId}`);
+};
+
+// Permanently deletes an order by ID (hard delete)
+export const hardDeleteOrder = async (orderId: string) => {
+  await api.delete(`/admin/orders/${orderId}/permanent`);
 };
